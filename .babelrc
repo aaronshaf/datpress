@@ -1,0 +1,22 @@
+{
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "chrome": 65
+        }
+      }
+    ]
+  ],
+  "plugins": [
+    "transform-class-properties",
+    [
+      "transform-runtime",
+      {
+        "polyfill": false,
+        "regenerator": true
+      }
+    ]
+  ]
+}
