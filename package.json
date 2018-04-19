@@ -17,7 +17,7 @@
     "slug": "^0.9.1"
   },
   "scripts": {
-    "build": " rm -rf dist/* && parcel build src/index.js && rm -rf example/public/datpress/* && cp -R dist/* example/public/datpress/"
+    "build": "rm -rf dist/* && parcel build src/index.js && rm -rf example/build/datpress/* && cp -R dist/* example/build/datpress/"
   },
   "devDependencies": {
     "babel-preset-env": "^1.6.1",

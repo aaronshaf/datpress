@@ -9,7 +9,8 @@ class EditPageForm extends Component {
 
     this.state = {
       isFileLoaded: false,
-      content: null
+      content: null,
+      done: false
     };
   }
 
@@ -40,12 +41,26 @@ class EditPageForm extends Component {
 
     const filename = document.getElementById("EditPage-filename").value;
 
+    const wasFilenameChanged = filename !== this.props.basename;
+
+    if (wasFilenameChanged) {
+      const oldFirstChar = this.props.basename.substr(0, 1);
+      await archive.unlink(
+        `/pages/${this.props.basename.substr(0, 1)}/${this.props.basename}.md`
+      );
+      await archive.unlink(`/build/${this.props.basename}.html`);
+    }
+
+    const newFirstChar = filename.substr(0, 1);
+
+    await mkdirp(`/pages/${newFirstChar}`, archive);
+
     const title = document.getElementById("EditPage-title").value;
 
     const content = document.getElementById("EditPage-content").value;
 
-    archive.writeFile(
-      `/pages/${filename.substr(0, 1)}/${filename}.md`,
+    await archive.writeFile(
+      `/pages/${newFirstChar}/${filename}.md`,
       content,
       "utf8"
     );
@@ -56,16 +71,36 @@ class EditPageForm extends Component {
 
     const output = template
       .replace("${pageTitle}", title)
-      .replace("${article}", articleHtml);
+      .replace("${content}", articleHtml);
 
-    await archive.writeFile(`/public/${filename}.html`, output, "utf8");
+    await archive.writeFile(`/build/${filename}.html`, output, "utf8");
 
-    this.setState({ path: filename });
+    this.setState({ done: true });
+  };
+
+  handleDelete = async event => {
+    event.preventDefault();
+
+    if (confirm("Are you sure you want to delete this?") === false) {
+      return;
+    }
+
+    const archive = this.props.selfArchive;
+
+    const oldFirstChar = this.props.basename.substr(0, 1);
+
+    await archive.unlink(
+      `/pages/${this.props.basename.substr(0, 1)}/${this.props.basename}.md`
+    );
+
+    await archive.unlink(`/build/${this.props.basename}.html`);
+
+    this.setState({ done: true });
   };
 
   render() {
-    if (typeof this.state.path === "string") {
-      return <Redirect to={`/${this.state.path}`} />;
+    if (this.state.done) {
+      return <Redirect to={`/admin/pages`} />;
     }
 
     return (
@@ -99,20 +134,27 @@ class EditPageForm extends Component {
 
             <div className="pt-control-group pt-fill">
               <textarea
-                id="EditPage-content"
-                style={{ height: "350px" }}
                 className="pt-input pt-fill"
-                dir="auto"
-                placeholder="Content"
                 defaultValue={this.state.content}
+                dir="auto"
+                id="EditPage-content"
+                placeholder="Content"
+                style={{ height: "350px" }}
               />
             </div>
 
             <button
-              type="submit"
               className="pt-button pt-large pt-intent-primary"
+              type="submit"
             >
               Publish
+            </button>
+            <button
+              className="pt-button pt-large pt-intent-danger"
+              onClick={this.handleDelete}
+              style={{ marginLeft: "8px" }}
+            >
+              Delete
             </button>
           </div>
         )}

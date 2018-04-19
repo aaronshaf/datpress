@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import marked from "marked";
 import { mkdirp } from "./utils";
 import { Redirect } from "react-router";
+import basename from "basename";
 
 class AddPageForm extends Component {
   constructor(props) {
@@ -42,16 +43,20 @@ class AddPageForm extends Component {
 
     const output = template
       .replace("${pageTitle}", title)
-      .replace("${article}", articleHtml);
+      .replace("${content}", articleHtml);
 
-    await archive.writeFile(`/public/${filename}.html`, output, "utf8");
+    await archive.writeFile(
+      `/build/${basename(filename)}.html`,
+      output,
+      "utf8"
+    );
 
     this.setState({ path: filename });
   };
 
   render() {
     if (typeof this.state.path === "string") {
-      return <Redirect to={`/${this.state.path}`} />;
+      return <Redirect to={`/admin/pages`} />;
     }
 
     return (
