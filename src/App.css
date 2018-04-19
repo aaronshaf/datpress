@@ -6,3 +6,19 @@
 .EditPageForm {
   padding: 24px;
 }
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 170px 600px;
+  grid-gap: 30px;
+}
+
+.renameme1 {
+  margin: auto;
+  margin-top: 24px;
+  width: 800px;
+}
+
+.pt-html-table {
+  width: 100%;
+}

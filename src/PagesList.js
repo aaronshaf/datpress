@@ -52,18 +52,16 @@ class PagesList extends Component {
     });
 
     return (
-      <div className="pt-fill">
-        <table className="pt-html-table">
-          <thead>
-            <tr>
-              <th>Filename</th>
-              <th />
-              <th>Creation</th>
-            </tr>
-          </thead>
-          <tbody>{pages}</tbody>
-        </table>
-      </div>
+      <table className="pt-html-table">
+        <thead>
+          <tr>
+            <th>Filename</th>
+            <th />
+            <th>Creation</th>
+          </tr>
+        </thead>
+        <tbody>{pages}</tbody>
+      </table>
     );
   }
 }
