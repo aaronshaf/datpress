@@ -63,36 +63,35 @@ class App extends Component {
               </ul>
             </div>
             <div className="grid-item">
-              <div>
-                <Switch>
-                  <Route
-                    path="/admin/add-page"
-                    component={({ match }) => (
-                      <AddPageForm selfArchive={selfArchive} />
-                    )}
-                  />
+              <Switch>
+                <Route
+                  path="/admin/add-page"
+                  component={({ match }) => (
+                    <AddPageForm selfArchive={selfArchive} />
+                  )}
+                />
 
-                  <Route
-                    path="/admin/edit-page/:basename"
-                    component={({ match }) => (
-                      <EditPageForm
-                        basename={match.params.basename}
-                        selfArchive={selfArchive}
-                      />
-                    )}
-                  />
+                <Route
+                  path="/admin/edit-page/:basename"
+                  component={({ match }) => (
+                    <EditPageForm
+                      basename={match.params.basename}
+                      selfArchive={selfArchive}
+                    />
+                  )}
+                />
 
-                  <Route
-                    path="/admin/pages"
-                    component={({ match }) => (
-                      <PagesList selfArchive={selfArchive} />
-                    )}
-                  />
+                <Route
+                  path="/admin/pages"
+                  component={({ match }) => (
+                    <PagesList selfArchive={selfArchive} />
+                  )}
+                />
 
-                  <Route component={NoMatch} />
-                </Switch>
-              </div>
+                <Route component={NoMatch} />
+              </Switch>
             </div>
+            <div className="grid-item" />
           </div>
         </div>
       </div>

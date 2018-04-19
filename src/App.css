@@ -4,19 +4,17 @@
 
 .AddPageForm,
 .EditPageForm {
-  padding: 24px;
+  /* padding: 24px; */
 }
 
 .grid-container {
   display: grid;
-  grid-template-columns: 170px 600px;
-  grid-gap: 30px;
+  grid-template-columns: 170px auto 170px;
+  grid-gap: 38px;
 }
 
 .renameme1 {
-  margin: auto;
-  margin-top: 24px;
-  width: 800px;
+  margin: 24px;
 }
 
 .pt-html-table {
