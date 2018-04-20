@@ -8,12 +8,17 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-runtime": "^6.26.0",
     "basename": "^0.1.2",
+    "gray-matter": "^4.0.1",
     "luxon": "^1.0.0",
     "marked": "^0.3.19",
+    "mdast-util-toc": "^2.0.1",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "react-router-dom": "^4.2.2",
     "react-transition-group": "^2.3.1",
+    "remark": "^9.0.0",
+    "remark-html": "^7.0.0",
+    "remark-preset-lint-recommended": "^3.0.1",
     "slug": "^0.9.1"
   },
   "scripts": {

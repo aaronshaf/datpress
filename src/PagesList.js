@@ -23,7 +23,7 @@ class PagesList extends Component {
     this.setState({
       pages: allFiles
         .filter(file => file.stat.isFile())
-        .sort((a, b) => (a.name > b.name ? 1 : -1))
+        .sort((a, b) => (a.stat.ctime < b.stat.ctime ? 1 : -1))
         .map(file => {
           return {
             basename: basename(file.name),
@@ -55,7 +55,7 @@ class PagesList extends Component {
       <table className="pt-html-table">
         <thead>
           <tr>
-            <th>Filename</th>
+            <th>Title</th>
             <th />
             <th>Creation</th>
           </tr>

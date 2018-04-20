@@ -23,7 +23,9 @@ class App extends Component {
       <div className="App">
         <nav className="pt-navbar pt-dark">
           <div className="pt-navbar-group pt-align-left">
-            <div className="pt-navbar-heading">DatPress</div>
+            <div className="pt-navbar-heading">
+              <Link to="/admin/pages">DatPress</Link>
+            </div>
           </div>
           <div class="pt-navbar-group pt-align-right">
             <a className="pt-button pt-minimal" href="/">
@@ -51,7 +53,7 @@ class App extends Component {
                   </Link>
                 </li>
 
-                <li class="pt-menu-header">
+                {/* <li class="pt-menu-header">
                   <h6>Settings</h6>
                 </li>
 
@@ -59,39 +61,37 @@ class App extends Component {
                   <Link className="pt-menu-item" to="/admin/settings/general">
                     General
                   </Link>
-                </li>
+                </li> */}
               </ul>
             </div>
-            <div className="grid-item">
-              <Switch>
-                <Route
-                  path="/admin/add-page"
-                  component={({ match }) => (
-                    <AddPageForm selfArchive={selfArchive} />
-                  )}
-                />
 
-                <Route
-                  path="/admin/edit-page/:basename"
-                  component={({ match }) => (
-                    <EditPageForm
-                      basename={match.params.basename}
-                      selfArchive={selfArchive}
-                    />
-                  )}
-                />
+            <Switch>
+              <Route
+                path="/admin/add-page"
+                component={({ match }) => (
+                  <AddPageForm selfArchive={selfArchive} />
+                )}
+              />
 
-                <Route
-                  path="/admin/pages"
-                  component={({ match }) => (
-                    <PagesList selfArchive={selfArchive} />
-                  )}
-                />
+              <Route
+                path="/admin/edit-page/:basename"
+                component={({ match }) => (
+                  <EditPageForm
+                    basename={match.params.basename}
+                    selfArchive={selfArchive}
+                  />
+                )}
+              />
 
-                <Route component={NoMatch} />
-              </Switch>
-            </div>
-            <div className="grid-item" />
+              <Route
+                path="/admin/pages"
+                component={({ match }) => (
+                  <PagesList selfArchive={selfArchive} />
+                )}
+              />
+
+              <Route component={NoMatch} />
+            </Switch>
           </div>
         </div>
       </div>

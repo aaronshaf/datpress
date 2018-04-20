@@ -1,8 +1,11 @@
 import React, { Component } from "react";
-import marked from "marked";
 import { mkdirp } from "./utils";
 import { Redirect } from "react-router";
 import basename from "basename";
+import remark from "remark";
+import recommended from "remark-preset-lint-recommended";
+import remarkHtml from "remark-html";
+import tocFromParsedMarkdown from "mdast-util-toc";
 
 class AddPageForm extends Component {
   constructor(props) {
@@ -25,19 +28,41 @@ class AddPageForm extends Component {
 
     const filename = document.getElementById("AddPage-filename").value;
 
-    const title = document.getElementById("AddPage-title").value;
-
     const content = document.getElementById("AddPage-content").value;
 
     await mkdirp(`/pages/${filename.substr(0, 1)}`, archive);
 
-    archive.writeFile(
+    await archive.writeFile(
       `/pages/${filename.substr(0, 1)}/${filename}.md`,
       content,
       "utf8"
     );
 
-    const articleHtml = marked(content);
+    const parsedMarkdownNode = remark().parse(content);
+    const toc = tocFromParsedMarkdown(parsedMarkdownNode, {
+      maxDepth: 2
+    });
+
+    let title;
+    try {
+      title = toc.children[0].children[0].value;
+    } catch (error) {
+      title = "Untitled";
+    }
+
+    const articleHtml = await new Promise((resolve, reject) => {
+      remark()
+        .use(recommended)
+        .use(remarkHtml)
+        .process(content, (err, result) => {
+          if (err != null) {
+            console.error(report(err));
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        });
+    });
 
     const template = await archive.readFile("/template.html", "utf8");
 
@@ -60,45 +85,42 @@ class AddPageForm extends Component {
     }
 
     return (
-      <form onSubmit={this.handleSubmit} className="AddPageForm">
-        <h1>Add New Page</h1>
+      <React.Fragment>
+        <div className="grid-item">
+          <form onSubmit={this.handleSubmit} className="AddPageForm">
+            <h1>Add New Page</h1>
 
-        <div className="pt-control-group pt-fill">
-          <div className="pt-input-group .modifier">
-            <input
-              id="AddPage-filename"
-              type="text"
-              className="pt-input pt-large"
-              placeholder="Filename"
-            />
-          </div>
+            <div className="pt-control-group pt-fill">
+              <div className="pt-input-group .modifier">
+                <input
+                  id="AddPage-filename"
+                  type="text"
+                  className="pt-input pt-large"
+                  placeholder="Filename"
+                />
+              </div>
+            </div>
+
+            <div className="pt-control-group pt-fill">
+              <textarea
+                id="AddPage-content"
+                style={{ height: "350px" }}
+                className="pt-input pt-fill"
+                dir="auto"
+                placeholder="Content"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="pt-button pt-large pt-intent-primary"
+            >
+              Publish
+            </button>
+          </form>
         </div>
-
-        <div className="pt-control-group pt-fill">
-          <div className="pt-input-group .modifier">
-            <input
-              id="AddPage-title"
-              type="text"
-              className="pt-input pt-large"
-              placeholder="Title"
-            />
-          </div>
-        </div>
-
-        <div className="pt-control-group pt-fill">
-          <textarea
-            id="AddPage-content"
-            style={{ height: "350px" }}
-            className="pt-input pt-fill"
-            dir="auto"
-            placeholder="Content"
-          />
-        </div>
-
-        <button type="submit" className="pt-button pt-large pt-intent-primary">
-          Publish
-        </button>
-      </form>
+        <div className="grid-item" />
+      </React.Fragment>
     );
   }
 }

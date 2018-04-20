@@ -1,7 +1,11 @@
 import React, { Component } from "react";
-import marked from "marked";
+// import marked from "marked";
 import { mkdirp } from "./utils";
 import { Redirect } from "react-router";
+import remark from "remark";
+import recommended from "remark-preset-lint-recommended";
+import remarkHtml from "remark-html";
+import tocFromParsedMarkdown from "mdast-util-toc";
 
 class EditPageForm extends Component {
   constructor(props) {
@@ -55,8 +59,6 @@ class EditPageForm extends Component {
 
     await mkdirp(`/pages/${newFirstChar}`, archive);
 
-    const title = document.getElementById("EditPage-title").value;
-
     const content = document.getElementById("EditPage-content").value;
 
     await archive.writeFile(
@@ -65,7 +67,35 @@ class EditPageForm extends Component {
       "utf8"
     );
 
-    const articleHtml = marked(content);
+    const parsedMarkdownNode = remark().parse(content);
+    const toc = tocFromParsedMarkdown(parsedMarkdownNode, {
+      maxDepth: 2
+    });
+
+    console.debug({ toc });
+
+    let title;
+    try {
+      title = toc.children[0].children[0].value;
+    } catch (error) {
+      title = "Untitled";
+    }
+
+    console.debug({ title });
+
+    const articleHtml = await new Promise((resolve, reject) => {
+      remark()
+        .use(recommended)
+        .use(remarkHtml)
+        .process(content, (err, result) => {
+          if (err != null) {
+            console.error(report(err));
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        });
+    });
 
     const template = await archive.readFile("/template.html", "utf8");
 
@@ -104,61 +134,60 @@ class EditPageForm extends Component {
     }
 
     return (
-      <form onSubmit={this.handleSubmit} className="EditPageForm">
+      <div>
         <h1>Edit New Page</h1>
 
         {this.state.isFileLoaded && (
-          <div>
-            <div className="pt-control-group pt-fill">
-              <div className="pt-input-group .modifier">
-                <input
-                  id="EditPage-filename"
-                  type="text"
-                  className="pt-input pt-large"
-                  placeholder="Filename"
-                  defaultValue={this.props.basename}
-                />
+          <form className="grid-container2" onSubmit={this.handleSubmit}>
+            <div className="grid-item">
+              <div>
+                <div>
+                  Permalink:{" "}
+                  <a href={`/${this.props.basename}`}>/{this.props.basename}</a>
+                </div>
+                <div className="pt-control-group pt-fill">
+                  <div className="pt-input-group">
+                    <input
+                      id="EditPage-filename"
+                      type="text"
+                      className="pt-input pt-large"
+                      placeholder="Filename"
+                      defaultValue={this.props.basename}
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-control-group pt-fill">
+                  <textarea
+                    className="pt-input pt-fill"
+                    defaultValue={this.state.content}
+                    dir="auto"
+                    id="EditPage-content"
+                    placeholder="Content"
+                    style={{ height: "350px" }}
+                  />
+                </div>
               </div>
             </div>
-
-            <div className="pt-control-group pt-fill">
-              <div className="pt-input-group .modifier">
-                <input
-                  id="EditPage-title"
-                  type="text"
-                  className="pt-input pt-large"
-                  placeholder="Title"
-                />
+            <div className="grid-item">
+              <div class="pt-card" style={{ position: "sticky" }}>
+                <button type="submit" class="pt-button pt-intent-primary">
+                  Publish
+                </button>
+                {this.props.basename !== "index" && (
+                  <button
+                    className="pt-button pt-minimal pt-intent-danger"
+                    onClick={this.handleDelete}
+                    style={{ marginLeft: "8px" }}
+                  >
+                    Delete
+                  </button>
+                )}
               </div>
             </div>
-
-            <div className="pt-control-group pt-fill">
-              <textarea
-                className="pt-input pt-fill"
-                defaultValue={this.state.content}
-                dir="auto"
-                id="EditPage-content"
-                placeholder="Content"
-                style={{ height: "350px" }}
-              />
-            </div>
-
-            <button
-              className="pt-button pt-large pt-intent-primary"
-              type="submit"
-            >
-              Publish
-            </button>
-            <button
-              className="pt-button pt-large pt-intent-danger"
-              onClick={this.handleDelete}
-              style={{ marginLeft: "8px" }}
-            >
-              Delete
-            </button>
-          </div>
+          </form>
         )}
-      </form>
+      </div>
     );
   }
 }

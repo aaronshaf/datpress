@@ -1,16 +1,33 @@
+h1 {
+  font-size: 1.5rem;
+  line-height: 1.5rem;
+}
+
+h2 {
+  font-size: 1.2rem;
+  line-height: 1.2rem;
+  margin-top: 0;
+}
+
+.pt-navbar-heading a,
+.pt-navbar-heading a:hover {
+  color: white;
+}
+
 .pt-control-group:not(:last-child) {
   margin-bottom: 20px;
 }
 
-.AddPageForm,
-.EditPageForm {
-  /* padding: 24px; */
-}
-
 .grid-container {
   display: grid;
-  grid-template-columns: 170px auto 170px;
-  grid-gap: 38px;
+  grid-template-columns: 200px auto;
+  grid-gap: 28px;
+}
+
+.grid-container2 {
+  display: grid;
+  grid-template-columns: auto 250px;
+  grid-gap: 28px;
 }
 
 .renameme1 {
