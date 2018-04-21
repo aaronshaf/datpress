@@ -139,7 +139,15 @@ class EditPageForm extends Component {
               <div>
                 <div>
                   Permalink:{" "}
-                  <a href={`/${this.props.basename}`}>/{this.props.basename}</a>
+                  <a
+                    href={`/${
+                      this.props.basename === "index" ? "" : this.props.basename
+                    }`}
+                  >
+                    /{this.props.basename === "index"
+                      ? ""
+                      : this.props.basename}
+                  </a>
                 </div>
                 {this.props.basename !== "index" && (
                   <div className="pt-control-group pt-fill">
