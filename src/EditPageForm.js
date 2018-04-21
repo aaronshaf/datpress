@@ -43,7 +43,10 @@ class EditPageForm extends Component {
       return;
     }
 
-    const filename = document.getElementById("EditPage-filename").value;
+    const filename =
+      this.props.basename !== "index"
+        ? document.getElementById("EditPage-filename").value
+        : "index";
 
     const wasFilenameChanged = filename !== this.props.basename;
 

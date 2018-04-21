@@ -23,8 +23,6 @@ class PagesList extends Component {
       recursive: true
     });
 
-    console.debug(allFiles);
-
     if (allFiles.length === 0) {
       await mkdirp("/pages/i", archive);
 
