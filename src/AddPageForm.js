@@ -81,7 +81,7 @@ class AddPageForm extends Component {
 
   render() {
     if (typeof this.state.path === "string") {
-      return <Redirect to={`/admin/pages`} />;
+      return <Redirect to={`/admin`} />;
     }
 
     return (
@@ -91,12 +91,12 @@ class AddPageForm extends Component {
             <h1>Add New Page</h1>
 
             <div className="pt-control-group pt-fill">
-              <div className="pt-input-group .modifier">
+              <div className="pt-input-group">
                 <input
                   id="AddPage-filename"
                   type="text"
                   className="pt-input pt-large"
-                  placeholder="Filename"
+                  placeholder="Path"
                 />
               </div>
             </div>

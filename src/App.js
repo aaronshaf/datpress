@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import AddPageForm from "./AddPageForm";
 import EditPageForm from "./EditPageForm";
 import PagesList from "./PagesList";
-import { Link, Route, Switch } from "react-router-dom";
+import { Link, Route, Switch, Redirect } from "react-router-dom";
 import { Menu, MenuItem, MenuDivider } from "@blueprintjs/core";
 import "@blueprintjs/core/lib/css/blueprint.css";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
@@ -24,7 +24,7 @@ class App extends Component {
         <nav className="pt-navbar pt-dark">
           <div className="pt-navbar-group pt-align-left">
             <div className="pt-navbar-heading">
-              <Link to="/admin/pages">DatPress</Link>
+              <Link to="/admin">DatPress</Link>
             </div>
           </div>
           <div class="pt-navbar-group pt-align-right">
@@ -37,13 +37,13 @@ class App extends Component {
         <div className="renameme1">
           <div className="grid-container">
             <div className="grid-item">
-              <ul className="pt-menu .modifier pt-elevation-1">
+              <ul className="pt-menu pt-elevation-1">
                 <li class="pt-menu-header">
                   <h6>Pages</h6>
                 </li>
 
                 <li>
-                  <Link className="pt-menu-item" to="/admin/pages">
+                  <Link className="pt-menu-item" to="/admin">
                     All pages
                   </Link>
                 </li>
@@ -68,14 +68,15 @@ class App extends Component {
             <Switch>
               <Route
                 path="/admin/add-page"
-                component={({ match }) => (
+                exact
+                render={({ match }) => (
                   <AddPageForm selfArchive={selfArchive} />
                 )}
               />
 
               <Route
                 path="/admin/edit-page/:basename"
-                component={({ match }) => (
+                render={({ match }) => (
                   <EditPageForm
                     basename={match.params.basename}
                     selfArchive={selfArchive}
@@ -84,13 +85,12 @@ class App extends Component {
               />
 
               <Route
-                path="/admin/pages"
-                component={({ match }) => (
-                  <PagesList selfArchive={selfArchive} />
-                )}
+                path="/admin"
+                exact
+                render={({ match }) => <PagesList selfArchive={selfArchive} />}
               />
 
-              <Route component={NoMatch} />
+              <Route render={NoMatch} />
             </Switch>
           </div>
         </div>

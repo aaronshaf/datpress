@@ -72,16 +72,12 @@ class EditPageForm extends Component {
       maxDepth: 2
     });
 
-    console.debug({ toc });
-
     let title;
     try {
       title = toc.children[0].children[0].value;
     } catch (error) {
       title = "Untitled";
     }
-
-    console.debug({ title });
 
     const articleHtml = await new Promise((resolve, reject) => {
       remark()
@@ -130,12 +126,12 @@ class EditPageForm extends Component {
 
   render() {
     if (this.state.done) {
-      return <Redirect to={`/admin/pages`} />;
+      return <Redirect to={`/admin`} />;
     }
 
     return (
       <div>
-        <h1>Edit New Page</h1>
+        <h1>Edit Page</h1>
 
         {this.state.isFileLoaded && (
           <form className="grid-container2" onSubmit={this.handleSubmit}>
@@ -145,17 +141,19 @@ class EditPageForm extends Component {
                   Permalink:{" "}
                   <a href={`/${this.props.basename}`}>/{this.props.basename}</a>
                 </div>
-                <div className="pt-control-group pt-fill">
-                  <div className="pt-input-group">
-                    <input
-                      id="EditPage-filename"
-                      type="text"
-                      className="pt-input pt-large"
-                      placeholder="Filename"
-                      defaultValue={this.props.basename}
-                    />
+                {this.props.basename !== "index" && (
+                  <div className="pt-control-group pt-fill">
+                    <div className="pt-input-group">
+                      <input
+                        id="EditPage-filename"
+                        type="text"
+                        className="pt-input pt-large"
+                        placeholder="Path"
+                        defaultValue={this.props.basename}
+                      />
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div className="pt-control-group pt-fill">
                   <textarea

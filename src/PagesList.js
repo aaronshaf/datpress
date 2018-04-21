@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { DateTime } from "luxon";
 import { Link } from "react-router-dom";
 import basename from "basename";
+import { mkdirp, renderMarkdownToHtml } from "./utils";
 
 class PagesList extends Component {
   constructor(props) {
@@ -15,10 +16,39 @@ class PagesList extends Component {
   async componentDidMount() {
     const archive = this.props.selfArchive;
 
-    const allFiles = await archive.readdir("/pages", {
+    await mkdirp("/pages", archive);
+
+    let allFiles = await archive.readdir("/pages", {
       stat: true,
       recursive: true
     });
+
+    console.debug(allFiles);
+
+    if (allFiles.length === 0) {
+      await mkdirp("/pages/i", archive);
+
+      const content = `# Your DatPress site
+
+Replace me with content. Press the escape key.`;
+
+      await archive.writeFile(`/pages/i/index.md`, content, "utf8");
+
+      const articleHtml = await renderMarkdownToHtml(content);
+
+      const template = await archive.readFile("/template.html", "utf8");
+
+      const output = template
+        .replace("${pageTitle}", "Your DatPress site")
+        .replace("${content}", articleHtml);
+
+      await archive.writeFile("/build/index.html", output, "utf8");
+
+      allFiles = await archive.readdir("/pages", {
+        stat: true,
+        recursive: true
+      });
+    }
 
     this.setState({
       pages: allFiles
@@ -42,10 +72,9 @@ class PagesList extends Component {
         <tr>
           <td>
             <Link to={`/admin/edit-page/${page.basename}`}>
-              {page.basename}
+              {page.basename}.md
             </Link>
           </td>
-          <td />
           <td>{date}</td>
         </tr>
       );
@@ -56,8 +85,7 @@ class PagesList extends Component {
         <thead>
           <tr>
             <th>Title</th>
-            <th />
-            <th>Creation</th>
+            <th>Created</th>
           </tr>
         </thead>
         <tbody>{pages}</tbody>
