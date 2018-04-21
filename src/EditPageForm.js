@@ -140,7 +140,7 @@ class EditPageForm extends Component {
           <form className="grid-container2" onSubmit={this.handleSubmit}>
             <div className="grid-item">
               <div>
-                <div>
+                <div style={{ marginBottom: "4px" }}>
                   Permalink:{" "}
                   <a
                     href={`/${

@@ -53,7 +53,7 @@ class App extends Component {
                   </Link>
                 </li>
 
-                {/* <li class="pt-menu-header">
+                <li class="pt-menu-header">
                   <h6>Settings</h6>
                 </li>
 
@@ -61,7 +61,7 @@ class App extends Component {
                   <Link className="pt-menu-item" to="/admin/settings/general">
                     General
                   </Link>
-                </li> */}
+                </li>
               </ul>
             </div>
 
